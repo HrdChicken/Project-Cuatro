@@ -5,7 +5,7 @@ export default function Loading(){
         <Grid textAlign='center' style={{height: '100vh'}} verticalAlign='middle'>
             <Grid.Column style={{width: 450}}>
                 <Loader size='large' active>
-                    Jumping Towards You
+                    Loading
                 </Loader>
             </Grid.Column>
         </Grid>

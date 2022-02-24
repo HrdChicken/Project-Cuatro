@@ -1,4 +1,4 @@
-const Post = require('../models/posts');
+const Post = require('../models/post');
 const {v4:uuidv4} = require('uuid');
 const S3 = require('aws-sdk/clients/s3');
 const s3 = new S3();
@@ -10,7 +10,26 @@ module.exports = {
 }
 
 function create(req, res){
-
+    const filePath = `${uuidv4()}${req.file.originalname}`;
+    const params = {Bucket: BUCKET, Key: filePath, Body: req.file.buffer}
+    
+    s3.upload(params, async function(err, data){
+        if(err) return res.status(400).json({err})
+    
+        try{
+            let post = await Post.create({
+                description: req.body.description,
+                user: req.user,
+                photoUrl: data.Location
+            })
+    
+            post = await post.populate('user')
+            res.status(201).json({post})
+    
+        }catch(err){
+            res.status(400).json({err})
+        }
+    })
 }
 
 async function index(req, res){

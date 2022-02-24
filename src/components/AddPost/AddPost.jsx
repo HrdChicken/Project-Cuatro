@@ -30,13 +30,11 @@ export default function AddMemoryForm(props){
         <Grid textAlign='center' verticalAlign='middle'>
       <Grid.Column style={{ maxWidth: 450 }}>
         <Segment>
-        
             <Form  autoComplete="off" onSubmit={handleSubmit}>
-            
               <Form.Input
                   className="form-control"
                   name="description"
-                  value={state.caption}
+                  value={state.description}
                   placeholder="What happened in this moment?"
                   onChange={handleChange}
                   required

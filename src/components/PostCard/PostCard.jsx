@@ -1,39 +1,44 @@
-import React from "react";
-import { Card, Dimmer, Segment, Image } from "semantic-ui-react";
-import PostCard from "../PostCard/PostCard";
-import Loader from '../Loader/Loader'
+import React from 'react';
+import { Card, Icon, Image } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
-export default function PostMemory({
-    posts,
-    numPhotosCol,
-    isProfile,
-    user,
-    addLike,
-    removeLike,
-    loading
-}) {
-    return(
-        <Card.Group itemsPerRow={numPhotosCol} stackable>
-            {loading ? (
-                <Segment>
-                    <Dimmer active inverted>
-                        <Loader size='small'>Loading</Loader>
-                    </Dimmer>
-        <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-                </Segment>
-            ): null}
-            {posts.map((post) => {
-                return(
-                    <PostCard
-                    post={post}
-                    key={post._id}
-                    isProfile={isProfile}
-                    user={user}
-                    removeLike={removeLike}
-                    addLike={addLike}
-                    />
-                )
-            })}
-        </Card.Group>
-    )
+function PostCard({post, isProfile, user, addLike, removeLike}){
+    const likedIndex = post.likes.findIndex(like => like.username === user.username)
+    const likeColor = likedIndex > -1 ? 'red' : 'grey';
+    const clickHandler = likedIndex > -1 ? () => removeLike(post.likes[likedIndex]._id) : () => addLike(post._id)
+
+    return (
+        <Card key={post._id} raised>
+        {isProfile ? (
+          ""
+        ) : (
+          <Card.Content textAlign="left">
+            <Card.Header>
+              <Link to={`/${post.user.username}`}>
+                <Image
+                  size="large"
+                  avatar
+                  src={
+                    post.user.photoUrl
+                      ? post.user.photoUrl
+                      : "https://react.semantic-ui.com/images/wireframe/square-image.png"
+                  }
+                />
+                {post.user.username}
+              </Link>
+            </Card.Header>
+          </Card.Content>
+        )}
+        <Image src={`${post.photoUrl}`} wrapped ui={false} />
+        <Card.Content>
+          <Card.Description>{post.description}</Card.Description>
+        </Card.Content>
+        <Card.Content extra textAlign={"right"}>
+          <Icon name={"heart"} size="large" color={likeColor} onClick={clickHandler}/>
+          {post.likes.length} Likes
+        </Card.Content>
+      </Card>
+      )
 }
+
+export default PostCard;
